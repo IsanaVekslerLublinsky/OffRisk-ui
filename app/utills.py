@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(CURRENT_DIR))
 
-from const import LOG_PATH, SERVER_MAP, DB_NAME_LIST
+from const import LOG_PATH, SERVER_MAP, DB_NAME_LIST, OFF_TARGET_CSV
 
 log = logging.getLogger("off-risk-ui-log")
 
@@ -20,7 +20,7 @@ log = logging.getLogger("off-risk-ui-log")
 def get_server_db_info():
     col1, col2 = st.columns(2)
 
-    server_name = col1.selectbox("Select server", ("CRISPR-il", "Local", "Custom"))
+    server_name = col1.selectbox("Select server", ("Local", "Custom"))
     if server_name == "Custom":
         server_address = col1.text_input("Server-name", "localhost", max_chars=50)
         server_port = col1.text_input("Port", "8123", max_chars=4)
@@ -198,6 +198,13 @@ def set_off_target_dict(new_off_target_dict):
 
     # Initialization
     off_target = pd.DataFrame.from_dict(new_off_target_dict)
+
+    off_target_to_save = off_target.copy()
+    off_target_to_save = off_target_to_save[off_target_to_save["chromosome"].map(lambda x: len(str(x)) < 6)]
+    off_target_to_save["chromosome"] = off_target_to_save["chromosome"].apply(lambda x: f"chr{x}")
+    off_target_to_save = off_target_to_save[["chromosome", "start", "end", "strand", "off_target_id"]]
+    off_target_to_save.to_csv(OFF_TARGET_CSV, sep="\t", index_label=False)
+
     columns_name = off_target.columns
 
     if "gene_ensembl_id" in columns_name:

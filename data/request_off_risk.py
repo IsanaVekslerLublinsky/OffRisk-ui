@@ -5,13 +5,13 @@ import httpx
 import pandas as pd
 from tqdm import tqdm
 
-APP_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_NAME_LIST = ['all']
 SERVER_NAME = 'http://localhost:8123'
-doi_10_1002_cti2_1372_RESULT_FILE = f'{APP_DIR}/doi_10_1002_cti2_1372.json'
-LEENAY_INPUT_FILE_PATH = f'{APP_DIR}/Leenay_pam_alignment.tsv'
-LEENAY_INPUT_JSON_FILE_PATH = f'{APP_DIR}/Leenay_pam_alignment.json'
-LEENAY_RESULT_FILE_PATH = f'{APP_DIR}/Leenay_pam_alignment_result.json'
+doi_10_1002_cti2_1372_RESULT_FILE = f'{BASE_DIR}/doi_10_1002_cti2_1372.json'
+LEENAY_INPUT_FILE_PATH = f'{BASE_DIR}/Leenay_pam_alignment.tsv'
+LEENAY_INPUT_JSON_FILE_PATH = f'{BASE_DIR}/Leenay_pam_alignment.json'
+LEENAY_RESULT_FILE_PATH = f'{BASE_DIR}/Leenay_pam_alignment_result.json'
 
 
 def handle_post_request(json_as_dictionary, str_of_target, server=SERVER_NAME):
@@ -171,8 +171,8 @@ def load_result_to_df(result_file):
 
 
 def main():
-    # on_target_leenay_site()
-    # load_result_to_df(LEENAY_RESULT_FILE_PATH)
+    on_target_leenay_site()
+    load_result_to_df(LEENAY_RESULT_FILE_PATH)
 
     on_target_doi_10_1002_cti2_1372_request()
     load_result_to_df(doi_10_1002_cti2_1372_RESULT_FILE)

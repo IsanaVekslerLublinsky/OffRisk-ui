@@ -20,7 +20,7 @@ CIRCULAR_GRAPH_SCRIPT_PATH = f"{BASE_DIR}/scripts/circular_graph.R"
 # Files
 OFF_TARGET_CSV = f"{BASE_DIR}/output/off_target.csv"
 
-SERVER_MAP = {"CRISPR-il": "http://apps-dev.crispr-il.local/off-tov", "Local": "http://off-risk-server:80",
+SERVER_MAP = {"Local": "http://off-risk-server:80",
               "Custom": "http://{}:{}"}
 
 HELP_STRING_MAP = {

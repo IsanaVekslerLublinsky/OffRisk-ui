@@ -10,11 +10,11 @@ COPY requirements.txt .
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
 COPY /app /app
-COPY /images /images
-# COPY /scripts /scripts
+COPY /scripts /scripts
 
-RUN mkdir -p /output/ && \
-    mkdir -p /log/
+WORKDIR /images
+WORKDIR /output
+WORKDIR /log
 
 WORKDIR /app
 CMD streamlit run home.py

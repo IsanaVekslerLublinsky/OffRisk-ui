@@ -1,11 +1,17 @@
+import json
 import logging
+import os
+
 import streamlit as st
 from matplotlib.colors import LinearSegmentedColormap
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+
+from app import utills
 from app.utills import get_off_target, clear_session_information, download_dataframe, get_flashfry_score
-from const import HELP_STRING_MAP, FULL_NAME_MAP, COLUMNS_NAME_MAP
+from const import HELP_STRING_MAP, FULL_NAME_MAP, COLUMNS_NAME_MAP, CIRCULAR_GRAPH_PNG_PATH, OFF_TARGET_CSV, \
+    CIRCULAR_GRAPH_SCRIPT_PATH
 from st_aggrid import GridOptionsBuilder, AgGrid, JsCode
 
 log = logging.getLogger("off-risk-ui-log")
@@ -17,7 +23,20 @@ def process_data(all_result):
     :param all_result: AllDbResult object
     """
     st.info("Processing results from the server")
-    # Create circular graph
+
+    # Create the OffRisk circular graph
+    input_json = {"png_path": CIRCULAR_GRAPH_PNG_PATH, "csv_path": OFF_TARGET_CSV}
+    args = ["Rscript", CIRCULAR_GRAPH_SCRIPT_PATH, json.dumps(input_json)]
+    exit_code = utills.run_external_proc(args)
+    if exit_code:
+        st.error("Could not create circular graph")
+    else:
+        try:
+            if os.path.exists(CIRCULAR_GRAPH_PNG_PATH):
+                st.subheader("Circular view for off target location in genome")
+                st.image(CIRCULAR_GRAPH_PNG_PATH)
+        except Exception as e:
+            st.error(f"There is no Image: {e}")
 
     off_target_df = get_off_target()
     flashfry_score_df = get_flashfry_score()

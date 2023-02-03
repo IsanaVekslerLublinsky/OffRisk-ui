@@ -1,31 +1,19 @@
 # OffRisk UI
-
-
-# build
-~~~
-docker build -t off-risk-ui ./ -f Dockerfile
-~~~
-
-# Run with Docker
-
-Iy you wish to run the ui with crispr-il (gogenome) please run the following command: 
-~~~
-docker run --network host off-risk-ui
-~~~
-Else you can run the following:
-~~~
-docker run -p8501:8501 off-risk-ui
-~~~
-
-If you are running with off-risk server as well you need to connect them to the same network.
-To create the network and then connect the docker to it:
+OffRisk UI is running with the server OffRisk, and both need to be on the same network
+To create the network:
 ~~~
 docker network create off-risk-net
-docker run -p8501:8501 --net off-risk-net off-risk-ui
 ~~~
 
+# Build the docker:
+The docker can be build from the server repo using docker-compose. both repo needs to be on the same directory:
 
-# Run localy with pycharm
+root
+    -OffRisk
+    -OffRisk-ui
+
+More instruction can be found in the documentation and in repo OffRisk
+# Run locally with pycharm
 ~~~
 streamlit run main.py
 ~~~
