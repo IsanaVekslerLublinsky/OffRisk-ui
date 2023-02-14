@@ -9,6 +9,7 @@ sys.path.append(os.path.dirname(CURRENT_DIR))
 
 from app.utills import preprocess_omim, preprocess_cosmic
 
+st.set_page_config(layout="wide", page_title="OffRisk v.1.0")
 
 log = logging.getLogger("off-risk-ui-log")
 

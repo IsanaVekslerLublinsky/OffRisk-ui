@@ -15,6 +15,8 @@ from app.object_def import OffTargetList
 from app.utills import load_data, get_server_db_info
 from app.general_info import process_data
 
+st.set_page_config(layout="wide", page_title="OffRisk v.1.0")
+
 log = logging.getLogger("off-risk-ui-log")
 
 hide_streamlit_style = """
