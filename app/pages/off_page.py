@@ -67,7 +67,8 @@ if st.button("Run"):
             # Create request body
             request_body["db_list"] = selected_options
             all_result = load_data(2, request_body, server_name_url)
-            process_data(all_result)
+            if all_result:
+                process_data(all_result)
 
         else:
             pass

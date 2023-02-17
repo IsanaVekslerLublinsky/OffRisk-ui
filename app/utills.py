@@ -66,10 +66,12 @@ def load_data(case, request_body, chosen_server_name):
             # send request
             r_status, response_body = handle_post_request(request_body, "off-target",
                                                           chosen_server_name)
-        if r_status:
+        if r_status == 1:
             st.error(f"Error while getting the Response: {response_body}")
-        else:
+        elif r_status == 0:
             all_result_dict = build_all_result(response_body)
+        elif r_status == 2:
+            return
 
     except UnicodeDecodeError as e:
         log.error("error in load_data {}".format(e))
@@ -94,6 +96,9 @@ def handle_post_request(json_as_dictionary, str_of_target, server=SERVER_MAP["Lo
             log.info("Server returned code: {}".format(r.status_code))
             respond = r.json()
             return 0, respond
+        elif r.status_code == 204:
+            st.warning('There was no result from the server')
+            return 2, ''
         else:
             error_message = BeautifulSoup(r.text).getText()
             log.error("Server returned error code: {}: {}".format(r.status_code, error_message))

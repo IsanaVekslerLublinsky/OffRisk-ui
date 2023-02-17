@@ -66,7 +66,8 @@ if st.button("Run"):
                 data = json.load(StringIO(on_target_uploaded_file.getvalue().decode("utf-8")))
                 request_body = parse_obj_as(SitesList, data).dict()
                 all_result = load_data(1, request_body, server_name_url)
-                process_data(all_result)
+                if all_result:
+                    process_data(all_result)
             else:
                 st.error("File name is not in the correct format. File must be JSON type, "
                          "and contain only letters and numbers")
@@ -81,6 +82,7 @@ if st.button("Run"):
             request_body = site_list_obj.dict()
             request_body["db_list"] = selected_options
             all_result = load_data(1, request_body, server_name_url)
-            process_data(all_result)
+            if all_result:
+                process_data(all_result)
         else:
             pass

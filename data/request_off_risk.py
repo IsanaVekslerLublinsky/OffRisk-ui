@@ -8,7 +8,8 @@ from tqdm import tqdm
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_NAME_LIST = ['all']
 SERVER_NAME = 'http://localhost:8123'
-doi_10_1002_cti2_1372_RESULT_FILE = f'{BASE_DIR}/doi_10_1002_cti2_1372.json'
+doi_10_1002_cti2_1372_input_FILE = f'{BASE_DIR}/doi_10_1002_cti2_1372.json'
+doi_10_1002_cti2_1372_RESULT_FILE = f'{BASE_DIR}/doi_10_1002_cti2_1372_result.json'
 LEENAY_INPUT_FILE_PATH = f'{BASE_DIR}/Leenay_pam_alignment.tsv'
 LEENAY_INPUT_JSON_FILE_PATH = f'{BASE_DIR}/Leenay_pam_alignment.json'
 LEENAY_RESULT_FILE_PATH = f'{BASE_DIR}/Leenay_pam_alignment_result.json'
@@ -101,58 +102,59 @@ def load_result_to_df(result_file):
                                                                pd.DataFrame()
 
     for result in results:
-        if result['off_targets']:
-            new_db = pd.DataFrame.from_dict(result['off_targets'])
-            new_db['request_num'] = result['request_id']
-            off_target_df = pd.concat([off_target_df, new_db])
-        if result['flashfry_score']:
-            new_db = pd.DataFrame.from_dict(result['flashfry_score'])
-            new_db['request_num'] = result['request_id']
-            flashfry_score_df = pd.concat([flashfry_score_df, new_db])
-        if result['all_result']['GENCODE_result_list']:
-            new_db = pd.DataFrame.from_dict(result['all_result']['GENCODE_result_list'][0]['data'])
-            new_db['request_num'] = result['request_id']
-            gendoce_df = pd.concat([gendoce_df, new_db])
-        if result['all_result']['MirGene_result_list']:
-            new_db = pd.DataFrame.from_dict(result['all_result']['MirGene_result_list'][0]['data'])
-            new_db['request_num'] = result['request_id']
-            mirgene_df = pd.concat([mirgene_df, new_db])
-        if result['all_result']['EnhancerAtlas_result_list']:
-            new_db = pd.DataFrame.from_dict(result['all_result']['EnhancerAtlas_result_list'][0]['data'])
-            new_db['request_num'] = result['request_id']
-            enhanceratlas_df = pd.concat([enhanceratlas_df, new_db])
-        if result['all_result']['ReMapEPD_result_list']:
-            new_db = pd.DataFrame.from_dict(result['all_result']['ReMapEPD_result_list'][0]['data'])
-            new_db['request_num'] = result['request_id']
-            remapepd_df = pd.concat([remapepd_df, new_db])
-        if result['all_result']['Pfam_result_list']:
-            new_db = pd.DataFrame.from_dict(result['all_result']['Pfam_result_list'][0]['data'])
-            new_db['request_num'] = result['request_id']
-            pfam_df = pd.concat([pfam_df, new_db])
-        if result['all_result']['TargetScan_result_list']:
-            new_db = pd.DataFrame.from_dict(result['all_result']['TargetScan_result_list'][0]['data'])
-            new_db['request_num'] = result['request_id']
-            targetscan_df = pd.concat([targetscan_df, new_db])
-        if result['all_result']['OMIM_result_list']:
-            new_db = pd.DataFrame.from_dict(result['all_result']['OMIM_result_list'][0]['data'])
-            new_db['request_num'] = result['request_id']
-            omim_df = pd.concat([omim_df, new_db])
-        if result['all_result']['HumanTF_result_list']:
-            new_db = pd.DataFrame.from_dict(result['all_result']['HumanTF_result_list'][0]['data'])
-            new_db['request_num'] = result['request_id']
-            humantf_df = pd.concat([humantf_df, new_db])
-        if result['all_result']['Protein_Atlas_result_list']:
-            new_db = pd.DataFrame.from_dict(result['all_result']['Protein_Atlas_result_list'][0]['data'])
-            new_db['request_num'] = result['request_id']
-            protein_atlas_df = pd.concat([protein_atlas_df, new_db])
-        if result['all_result']['RBP_result_list']:
-            new_db = pd.DataFrame.from_dict(result['all_result']['RBP_result_list'][0]['data'])
-            new_db['request_num'] = result['request_id']
-            rbp_df = pd.concat([rbp_df, new_db])
-        if result['all_result']['COSMIC_result_list']:
-            new_db = pd.DataFrame.from_dict(result['all_result']['COSMIC_result_list'][0]['data'])
-            new_db['request_num'] = result['request_id']
-            cosmic_df = pd.concat([cosmic_df, new_db])
+        if result:
+            if result.get('off_targets'):
+                new_db = pd.DataFrame.from_dict(result['off_targets'])
+                new_db['request_num'] = result['request_id']
+                off_target_df = pd.concat([off_target_df, new_db])
+            if result.get('flashfry_score'):
+                new_db = pd.DataFrame.from_dict(result['flashfry_score'])
+                new_db['request_num'] = result['request_id']
+                flashfry_score_df = pd.concat([flashfry_score_df, new_db])
+            if result.get('all_result', {}).get('GENCODE_result_list'):
+                new_db = pd.DataFrame.from_dict(result['all_result']['GENCODE_result_list'][0]['data'])
+                new_db['request_num'] = result['request_id']
+                gendoce_df = pd.concat([gendoce_df, new_db])
+            if result.get('all_result', {}).get('MirGene_result_list'):
+                new_db = pd.DataFrame.from_dict(result['all_result']['MirGene_result_list'][0]['data'])
+                new_db['request_num'] = result['request_id']
+                mirgene_df = pd.concat([mirgene_df, new_db])
+            if result.get('all_result', {}).get('EnhancerAtlas_result_list'):
+                new_db = pd.DataFrame.from_dict(result['all_result']['EnhancerAtlas_result_list'][0]['data'])
+                new_db['request_num'] = result['request_id']
+                enhanceratlas_df = pd.concat([enhanceratlas_df, new_db])
+            if result.get('all_result', {}).get('ReMapEPD_result_list'):
+                new_db = pd.DataFrame.from_dict(result['all_result']['ReMapEPD_result_list'][0]['data'])
+                new_db['request_num'] = result['request_id']
+                remapepd_df = pd.concat([remapepd_df, new_db])
+            if result['all_result']['Pfam_result_list']:
+                new_db = pd.DataFrame.from_dict(result['all_result']['Pfam_result_list'][0]['data'])
+                new_db['request_num'] = result['request_id']
+                pfam_df = pd.concat([pfam_df, new_db])
+            if result.get('all_result', {}).get('TargetScan_result_list'):
+                new_db = pd.DataFrame.from_dict(result['all_result']['TargetScan_result_list'][0]['data'])
+                new_db['request_num'] = result['request_id']
+                targetscan_df = pd.concat([targetscan_df, new_db])
+            if result.get('all_result', {}).get('OMIM_result_list'):
+                new_db = pd.DataFrame.from_dict(result['all_result']['OMIM_result_list'][0]['data'])
+                new_db['request_num'] = result['request_id']
+                omim_df = pd.concat([omim_df, new_db])
+            if result.get('all_result', {}).get('HumanTF_result_list'):
+                new_db = pd.DataFrame.from_dict(result['all_result']['HumanTF_result_list'][0]['data'])
+                new_db['request_num'] = result['request_id']
+                humantf_df = pd.concat([humantf_df, new_db])
+            if result.get('all_result', {}).get('Protein_Atlas_result_list'):
+                new_db = pd.DataFrame.from_dict(result['all_result']['Protein_Atlas_result_list'][0]['data'])
+                new_db['request_num'] = result['request_id']
+                protein_atlas_df = pd.concat([protein_atlas_df, new_db])
+            if result.get('all_result', {}).get('RBP_result_list'):
+                new_db = pd.DataFrame.from_dict(result['all_result']['RBP_result_list'][0]['data'])
+                new_db['request_num'] = result['request_id']
+                rbp_df = pd.concat([rbp_df, new_db])
+            if result.get('all_result', {}).get('COSMIC_result_list'):
+                new_db = pd.DataFrame.from_dict(result['all_result']['COSMIC_result_list'][0]['data'])
+                new_db['request_num'] = result['request_id']
+                cosmic_df = pd.concat([cosmic_df, new_db])
 
     off_target_df.to_csv(f'{result_file}_off_target_df.csv', sep='\t', index=False)
     flashfry_score_df.to_csv(f'{result_file}_flashfry_score_df.csv', sep='\t', index=False)
@@ -171,8 +173,8 @@ def load_result_to_df(result_file):
 
 
 def main():
-    on_target_leenay_site()
-    load_result_to_df(LEENAY_RESULT_FILE_PATH)
+    # on_target_leenay_site()
+    # load_result_to_df(LEENAY_RESULT_FILE_PATH)
 
     on_target_doi_10_1002_cti2_1372_request()
     load_result_to_df(doi_10_1002_cti2_1372_RESULT_FILE)
