@@ -245,6 +245,7 @@ def set_off_target_dict(new_off_target_dict):
     if "mir_gene" in columns_name:
         off_target['mir_gene'] = [','.join(map(str, item)) for item in off_target['mir_gene']]
     off_target.drop(columns=["id", "sequence"], inplace=True)
+    off_target = separate_attributes(off_target)
     st.session_state['off_target'] = off_target
 
 
@@ -397,3 +398,46 @@ def download(df, file_type, file_name="data"):
         link_str = f'<a href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' \
                    f'{b64}" download="{file_name}.xlsx">Download excel file</a>'
         return link_str
+
+def separate_attribute(line):
+    """
+    for each attribute separate by ';' the attribute itself separate by '=' in the format 'key=value' separate it to
+    different columns
+    :param line: attribute line
+    :return: A dictionary of the attributes
+    """
+
+    function_name = "separate_attribute"
+    dict_result = dict()
+    if line:
+        first_split = line.split(";")
+
+        for s in first_split:
+            second_split = s.split("=")
+            if len(second_split) > 1:
+                if second_split[0] in dict_result.keys():
+                    raise Exception("ERROR in {}: The same key exist twice - {}".format(function_name, second_split[0]))
+                else:
+                    dict_result[second_split[0]] = second_split[1]
+    return dict_result
+
+
+def separate_attributes(df_to_separate):
+    """
+    Separate the attributes to different columns
+    :param df_to_separate: A dictionary of the result to separate. key is index, value is dataframe
+    :return: A dictionary the result intersection with attribute separate. key is index, value is dataframe
+    """
+
+    function_name = "separate_attributes"
+    log.debug("Entering {}".format(function_name))
+
+    # for result_key in off_target_result_dict:
+    # Separate the attributes column
+    if len(df_to_separate.index) != 0:
+        df_to_separate.loc[:, "separate"] = df_to_separate.loc[:, "attributes"].apply(lambda s: separate_attribute(s))
+        df_attributes = pd.DataFrame(df_to_separate["separate"].values.tolist(), index=df_to_separate.index)
+        result = pd.concat([df_to_separate, df_attributes], axis=1).drop("separate", axis=1)
+        return result
+    else:
+        return df_to_separate
