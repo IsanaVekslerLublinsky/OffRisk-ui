@@ -173,8 +173,8 @@ def load_result_to_df(result_file):
 
 
 def main():
-    # on_target_leenay_site()
-    # load_result_to_df(LEENAY_RESULT_FILE_PATH)
+    on_target_leenay_site()
+    load_result_to_df(LEENAY_RESULT_FILE_PATH)
 
     on_target_doi_10_1002_cti2_1372_request()
     load_result_to_df(doi_10_1002_cti2_1372_RESULT_FILE)
