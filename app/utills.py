@@ -7,6 +7,7 @@ import os
 import sys
 import streamlit as st
 import pandas as pd
+from callbacks import on_select_all, on_change_dbs_selection, on_change_server
 from bs4 import BeautifulSoup
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -18,24 +19,34 @@ log = logging.getLogger("off-risk-ui-log")
 
 
 def get_server_db_info():
+
+    if "server_type" not in st.session_state:
+        st.session_state.server_type = "Local"
+        st.session_state.server_address = SERVER_MAP["Local"]["url"]
+        st.session_state.server_port = SERVER_MAP["Local"]["port"]
+        st.session_state.server_url = "{}:{}".format(st.session_state.server_address, st.session_state.server_port)
+
+    if "dbs" not in st.session_state:
+        st.session_state.dbs = [list(DB_NAME_LIST.keys())[0]]
+        st.session_state.is_select_all = False
+
     col1, col2 = st.columns(2)
 
-    server_name = col1.selectbox("Select server", ("Local", "Custom"))
-    if server_name == "Custom":
-        server_address = col1.text_input("Server-name", "localhost", max_chars=50)
-        server_port = col1.text_input("Port", "8123", max_chars=4)
-        server_name_url = SERVER_MAP[server_name].format(server_address, server_port)
-    else:
-        server_name_url = SERVER_MAP[server_name]
+    if st.session_state.server_type == "Custom":
+        col1.text_input("Server-name", max_chars=50, key="server_address")
+        col1.text_input("Port", max_chars=4, key="server_port")
+
 
     container = col2.container()
-    select_all = col2.checkbox("Select all")
-    if select_all:
-        selected_options = container.multiselect("Select databases:", DB_NAME_LIST, DB_NAME_LIST)
-    else:
-        selected_options = container.multiselect("Select databases:", DB_NAME_LIST, ["gencode"])
+    selected_options = container.empty()
 
-    return server_name_url, selected_options
+    col1.selectbox("Select server", ("Local", "Custom"), on_change=on_change_server, key="server_type")
+
+    selected_options.multiselect("Select databases:", list(DB_NAME_LIST.keys()), on_change=on_change_dbs_selection,
+                                 format_func=lambda v: DB_NAME_LIST[v], key='dbs')
+
+    col2.checkbox("Select all", on_change=on_select_all, disabled=st.session_state.is_select_all, key="is_select_all")
+
 
 
 def load_data(case, request_body, chosen_server_name):
@@ -79,7 +90,7 @@ def load_data(case, request_body, chosen_server_name):
     return all_result_dict
 
 
-def handle_post_request(json_as_dictionary, str_of_target, server=SERVER_MAP["Local"]):
+def handle_post_request(json_as_dictionary, str_of_target, server):
     """
     :param server: the server name or IP to send the request to
     :param json_as_dictionary: the user input in json format
@@ -244,8 +255,9 @@ def set_off_target_dict(new_off_target_dict):
         off_target['cancer_related'] = [','.join(map(str, item)) for item in off_target['cancer_related']]
     if "mir_gene" in columns_name:
         off_target['mir_gene'] = [','.join(map(str, item)) for item in off_target['mir_gene']]
-    off_target.drop(columns=["id", "sequence"], inplace=True)
-    off_target = separate_attributes(off_target)
+    # off_target.drop(columns=["id", "sequence"], inplace=True)
+    off_target.drop(columns=["id"], inplace=True)
+    # off_target = separate_attributes(off_target)
     st.session_state['off_target'] = off_target
 
 
@@ -301,6 +313,10 @@ def build_all_result(response):
     try:
         all_result = response["all_result"]
         set_off_target_dict(response["off_targets"])
+        if "target_risk_results" in response:
+            st.session_state.target_risk_results = pd.DataFrame.from_dict(response["target_risk_results"])
+        else:
+            st.session_state.target_risk_results = pd.DataFrame()
         if response["flashfry_score"]:
             test = pd.DataFrame.from_dict(response["flashfry_score"])
             st.session_state["flashfry_score"] = test
@@ -387,7 +403,7 @@ def download(df, file_type, file_name="data"):
         csv_to_download = df.to_csv(index=False)
         b64 = base64.b64encode(csv_to_download.encode()).decode()
         link_str = \
-            f'<a href="data:file/csv;base64,{b64}" download="{file_name}.csv">download your results as csv file</a>'
+            f'<a href="data:file/csv;base64,{b64}" download="{file_name}.csv">Download csv file</a>'
         return link_str
     else:
         # case for xslx file

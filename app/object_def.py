@@ -67,13 +67,15 @@ class SitesList(BaseModel):
     List of Sites
     """
 
-    pattern: str = "NNNNNNNNNNNNNNNNNNNNNGG"
+    # pattern: str = "NNNNNNNNNNNNNNNNNNNNNGG"
+    pam: str = "NGG"
+    downstream: bool = True
     pattern_dna_bulge: int = 0
     pattern_rna_bulge: int = 0
     search_tools: List[str] = ["flashfry"]
     sites: List[Site]
 
-    @validator("pattern", allow_reuse=True)
+    @validator("pam", allow_reuse=True)
     def val_pattern(cls, v):
         if not re.fullmatch(r"[AGTCRYSWKMBDHVN]*$", v):
             raise ValueError("Not a valid pattern. Please refer for Cas-Offinder documentation")

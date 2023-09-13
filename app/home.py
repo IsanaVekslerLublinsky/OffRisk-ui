@@ -3,9 +3,11 @@ import streamlit as st
 import pandas as pd
 
 from utills import init_logger
+from st_pages import show_pages_from_config, add_indentation
+
 
 st.set_page_config(layout="wide", page_title="OffRisk v.1.0")
-
+add_indentation()
 # Main
 hide_streamlit_style = """
     <style>
@@ -14,6 +16,8 @@ hide_streamlit_style = """
 
 # Hide streamlit style (footer)
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
+show_pages_from_config("configuration_files/pages.toml")
 
 # Init logging
 init_logger(logger_name="off-risk-ui-log")

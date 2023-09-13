@@ -44,10 +44,14 @@ def process_data(all_result):
         st.error("There is no result from the server - nothing to show")
         return
     # Create flashfry score table
+
     create_flashfry_score_table(flashfry_score_df)
 
     # Create off_target table
     create_off_target_table(off_target_df)
+
+    # Create off_target risk table
+    create_off_target_risk_table(st.session_state.target_risk_results)
 
     # Plt risk score
     plot_risk_score(off_target_df["risk_score"].value_counts())
@@ -73,6 +77,7 @@ def process_data(all_result):
                         # current_df_rename = current_df.rename(columns=str.title, inplace=True)
                         # current_df_rename.columns = current_df_rename.columns.str.replace("_", " ")
                         current_df_rename = current_df.rename(columns=columns_name)
+                        # current_df_rename = current_df_rename[columns_name.values()]
                         gb_current_db = GridOptionsBuilder.from_dataframe(current_df_rename)
 
                         gb_current_db.configure_pagination()
@@ -126,6 +131,7 @@ def create_off_target_table(off_target_df):
     st.title("Off-targets Summary")
     columns_name = COLUMNS_NAME_MAP["OFF_TARGET"]
     off_target_df = off_target_df.rename(columns=columns_name)
+    off_target_df = off_target_df[list(columns_name.values())]
 
     gb = GridOptionsBuilder.from_dataframe(off_target_df)
     gb.configure_pagination()
@@ -188,6 +194,23 @@ def create_off_target_table(off_target_df):
     download_dataframe(off_target_df, "Off target result")
 
 
+def create_off_target_risk_table(target_risk_results):
+
+    target_risk_results = target_risk_results.rename(columns=COLUMNS_NAME_MAP["RISK_TARGET"])
+    target_risk_results = target_risk_results[COLUMNS_NAME_MAP["RISK_TARGET"].values()]
+
+    if target_risk_results is not None and len(target_risk_results.index) != 0:
+        st.title("Target Risk Score Summary")
+        gb_target_risk = GridOptionsBuilder.from_dataframe(target_risk_results)
+        gb_target_risk.configure_pagination()
+        gb_target_risk.configure_default_column(groupable=True, filterable=False, sorteable=False,
+                                                   editable=True)
+        grid_options_target_risk = gb_target_risk.build()
+
+        AgGrid(target_risk_results, gridOptions=grid_options_target_risk, enable_enterprise_modules=True)
+        download_dataframe(target_risk_results, "target_risk_score_summary")
+
+
 def plot_risk_score(off_target_score_count):
     """
     Create pie chart for the Risk Score information
@@ -196,6 +219,7 @@ def plot_risk_score(off_target_score_count):
     col = st.columns(3)
     color_map = {"High_coding": "firebrick", 'Medium_coding': "red", 'Low_coding': "lightsalmon",
                  'Medium_regulatory': "orange", "Low_regulatory": 'bisque', "": "white"}
+
     colors = [color_map[x] for x in off_target_score_count.index]
     fig, ax = plt.subplots()
     total = sum(off_target_score_count)
@@ -203,7 +227,7 @@ def plot_risk_score(off_target_score_count):
            autopct=lambda p: '{:.0f}'.format(p * total / 100),
            colors=colors, textprops={'fontsize': 8},
            wedgeprops={"edgecolor": "black", 'linewidth': 0.5})
-    ax.set_title("Score sum", fontsize=14)
+    ax.set_title("Off-targets risk score distribution", fontsize=14)
     plt.tight_layout()
     col[1].pyplot(fig)
 
@@ -271,6 +295,8 @@ def process_protein_atlas(current_df):
     # create dictionary with value to integer mappings
     value_to_int = {value: i for i, value in
                     enumerate(["Not representative", "None", "Not detected", "Low", "Medium", "High"])}
+
+    value_to_int['Ascending'] = 1
 
     current_df_new = tmp_current_df.replace(value_to_int).drop(["off_target_id"], axis=1).T
     f, ax = plt.subplots(figsize=(10, 30))

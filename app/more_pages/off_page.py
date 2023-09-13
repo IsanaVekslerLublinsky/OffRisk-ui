@@ -6,6 +6,7 @@ import logging
 import re
 from io import StringIO
 from pydantic.tools import parse_obj_as
+from st_pages import add_indentation
 
 CURRENT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.dirname(CURRENT_DIR))
@@ -17,7 +18,11 @@ from app.general_info import process_data
 
 st.set_page_config(layout="wide", page_title="OffRisk v.1.0")
 
+add_indentation()
+
 log = logging.getLogger("off-risk-ui-log")
+
+
 
 hide_streamlit_style = """
     <style>
@@ -27,9 +32,9 @@ hide_streamlit_style = """
 # Hide streamlit style (footer)
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
-st.title('Off target page')
+st.title('Off-targets input page')
 st.header('Please choose server and databases for off-target analysis')
-server_name_url, selected_options = get_server_db_info()
+get_server_db_info()
 st.markdown("---")
 
 col1, col2 = st.columns((1, 1))
@@ -57,7 +62,7 @@ if st.button("Run"):
                 st.error("File name is not in the correct format. File must be tsv type, "
                          "and contain only letters and numbers")
         elif off_target_data:
-            off_target_data = off_target_data.replace(" ", "\t")
+            off_target_data = off_target_data.replace(" ", "\t") #should we not replace with \s+?
             tmp_df = pd.read_csv(StringIO(off_target_data), sep="\t", header=None)
 
         if not tmp_df.empty:
@@ -65,8 +70,8 @@ if st.button("Run"):
             # Validate input
             request_body = parse_obj_as(OffTargetList, {"off_targets": tmp_df.to_dict("records")}).dict()
             # Create request body
-            request_body["db_list"] = selected_options
-            all_result = load_data(2, request_body, server_name_url)
+            request_body["db_list"] = st.session_state.dbs
+            all_result = load_data(2, request_body, st.session_state.server_url)
             if all_result:
                 process_data(all_result)
 

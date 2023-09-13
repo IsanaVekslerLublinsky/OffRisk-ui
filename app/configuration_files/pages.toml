@@ -1,0 +1,24 @@
+[[pages]]
+path = "home.py"
+name = "Home"
+icon = "🏠"
+
+[[pages]]
+name = "Tools"
+icon = "🧰"
+is_section = true
+
+[[pages]]
+path = "more_pages/on_page.py"
+name = "gRNA input page"
+icon = "🎯"
+
+[[pages]]
+path = "more_pages/off_page.py"
+name = "Off-target page"
+icon = "🧬"
+
+[[pages]]
+path = "more_pages/convert_databases.py"
+name = "Databases"
+icon = "🖴"

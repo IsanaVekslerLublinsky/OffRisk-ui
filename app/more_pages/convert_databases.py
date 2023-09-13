@@ -3,13 +3,17 @@ import os
 import re
 import sys
 import streamlit as st
+from st_pages import add_indentation
 
 CURRENT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.dirname(CURRENT_DIR))
 
 from app.utills import preprocess_omim, preprocess_cosmic
 
+
 st.set_page_config(layout="wide", page_title="OffRisk v.1.0")
+
+add_indentation()
 
 log = logging.getLogger("off-risk-ui-log")
 

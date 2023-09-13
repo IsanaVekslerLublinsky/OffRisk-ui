@@ -4,8 +4,17 @@ SET_PAGE_CONFIG = False
 CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))).rstrip("/")
 
-DB_NAME_LIST = ["gencode", "mirgene", "remapepd", "enhanceratlas", "pfam", "targetscan",
-                "omim", "humantf", "protein_atlas", "rbp", "cosmic"]
+# DB_NAME_LIST = ["gencode", "mirgene", "remapepd", "enhanceratlas", "pfam", "targetscan",
+#                 "omim", "humantf", "protein_atlas", "rbp", "cosmic"]
+
+DB_NAME_LIST = {"gencode": "GENCODE", "mirgene": "MirGeneDB", "remapepd": "ReMapEPD",
+                      "enhanceratlas" : "EnhancerAtlas 2.0", "pfam": "Pfam", "targetscan": "TargetScan 8.0",
+                      "omim": "OMIM", "humantf": "HumanTF 3.0", "protein_atlas": "Protein Atlas", "rbp": "RBP",
+                      "cosmic": "COSMIC"}
+
+
+
+TOOLS_NAME_LIST = {"flashfry": "FlashFry", "cas_offinder": "Cas-OFFinder", "crispritz": "CRISPRitz"}
 
 # images
 LOGO_PATH = f"{BASE_DIR}/images/logo.png"
@@ -20,8 +29,13 @@ CIRCULAR_GRAPH_SCRIPT_PATH = f"{BASE_DIR}/scripts/circular_graph.R"
 # Files
 OFF_TARGET_CSV = f"{BASE_DIR}/output/off_target.csv"
 
-SERVER_MAP = {"Local": "http://off-risk-server:80",
-              "Custom": "http://{}:{}"}
+SERVER_MAP = {
+    "Local":
+        {
+            "url": "http://off-risk-server",
+            "port": 80
+        }
+}
 
 HELP_STRING_MAP = {
     "GENCODE": "Gene features in human based on biological evidence.\n"
@@ -55,7 +69,7 @@ HELP_STRING_MAP = {
 
 FULL_NAME_MAP = {
     "GENCODE": "GENCODE",
-    "MirGene": "MirGene",
+    "MirGene": "MirGeneDB",
     "ReMapEPD": "ReMap and Eukaryotic Promoter Database",
     "EnhancerAtlas": "EnhancerAtlas",
     "Pfam": "Pfam Protein Domains",
@@ -64,7 +78,7 @@ FULL_NAME_MAP = {
     "HumanTF": "Human transcription factors",
     "Protein Atlas": "The Human Protein Atlas",
     "RBP": "RNA binding proteins",
-    "COSMIC": "COSMIC database"
+    "COSMIC": "COSMIC"
 
 }
 
@@ -102,23 +116,48 @@ COLUMNS_NAME_MAP = {
             "gene_symbol": "Gene Symbol"},
     "COSMIC": {"off_target_id": "OFF Target (OT) Id", "gene_ensembl_id": "Gene Ensembl Id",
                "gene_symbol": "Gene Symbol", "Name": "Gene Name"},
-    "OFF_TARGET": {"off_target_id": "Off Target ID", "chromosome": "Cromosome", "start": "Start", "end": "End",
-                   "score": "Score", "strand": "Strand", "attributes": "attributes", "segment": "Feature",
+    "OFF_TARGET": {"off_target_id": "Off Target ID", "cr_rna": "crRNA", "dna": "DNA", "chromosome": "Chromosome",
+                   "start": "Start", "end": "End",
+                   # "score": "Score", "strand": "Strand", "attributes": "attributes", "segment": "Feature",
+                   # "strand": "Strand", "mismatch": "Mismatches", "sequence": "Sequence", "segment": "Feature",
+                   "strand": "Strand", "mismatch": "Mismatches", "gene_type": "Gene Type", "segment": "Feature",
+                   "gene_ensembl_id": "Gene Ensembl Id", "gene_symbol": "Gene Symbol",
                    "disease_related": "OMIM Phenotype",
                    "inheritance_model": "OMIM Inheritance Model",
-                   "remap_epd_gene_ensembl_id": "Promoter of Gene (ENSG)",
-                   "enhancer_atlas_gene_ensembl_id": "Enhancer of Gene (ENSG)",
-                   "enhancer_atlas_disease_related": "Enhancer Atlas Phenotype",
-                   "enhancer_atlas_inheritance_model": "Enhancer Atlas Inheritance Model",
-                   "remap_epd_disease_related": "ReMap & EPD Phenotype",
-                   "remap_epd_inheritance_model": "ReMap & EPD Inheritance model",
                    "cancer_related": "Role in Cancer",
-                   "enhancer_atlas_cancer_related": "Enhancer Atlas Role in Cancer",
-                   "remap_epd_cancer_related": "ReMap & EPD Role in Cancer",
-                   "gene_ensembl_id": "Gene Ensembl Id", "gene_symbol": "Gene Symbol", "mir_gene": "MiRNA gene",
-                   "pfam_protein_domains": "Pfam Protein Domains", "targetscan": "TargetScan",
+                   "mir_gene": "MiRNA gene", "pfam_protein_domains": "Pfam Protein Domains", "targetscan": "TargetScan",
                    "HumanTF_source": "HumanTF Source", "expression_information": "Expression Information",
-                   "risk_score": "Risk_Score", "rbp_gene_ensembl_id": "Rbp Gene"}
+                   "rbp_gene_ensembl_id": "Rbp Gene",
+                   "remap_epd_gene_ensembl_id": "Promoter of Gene (ENSG)",
+                   "remap_epd_disease_related": "Gene(Promoter) Phenotype",
+                   "remap_epd_inheritance_model": "Gene(Promoter) Inheritance model",
+                   "remap_epd_cancer_related": "Gene(Promoter) Role in Cancer",
+                   "enhancer_atlas_gene_ensembl_id": "Enhancer of Gene (ENSG)",
+                   "enhancer_atlas_disease_related": "Gene(Enhancer) Phenotype",
+                   "enhancer_atlas_inheritance_model": "Gene(Enhancer) Inheritance Model",
+                   "enhancer_atlas_cancer_related": "Gene(Enhancer) Role in Cancer",
+                   "risk_score": "Risk_Score"},
+
+    "RISK_TARGET": {"off_target_id": "Off Target ID", "cr_rna": "crRNA", "dna": "DNA", "chromosome": "Chromosome",
+                   "start": "Start", "end": "End",
+                   "strand": "Strand", "mismatch": "Mismatches", "gencode_gene_type": "Gene Type", "gencode_segment": "Feature",
+                   "gencode_gene_ensembl_id": "Gene Ensembl Id", "gencode_gene_symbol": "Gene Symbol",
+                   "gencode_omim_disease_related": "OMIM Phenotype",
+                   "gencode_omim_inheritance_model": "OMIM Inheritance Model",
+                   "gencode_cosmic_role_in_cancer": "Role in Cancer",
+                   "remapepd_gene_ensembl_id": "Promoter of Gene (ENSG)",
+                   "remapepd_epd_gene_symbol": "Gene(Promoter) Symbol",
+                   "remapepd_omim_disease_related": "Gene(Promoter) Phenotype",
+                   "remapepd_omim_inheritance_model": "Gene(Promoter) Inheritance model",
+                   "remapepd_cosmic_role_in_cancer": "Gene(Promoter) Role in Cancer",
+                   "enhanceratlas_gene_ensembl_id": "Enhancer of Gene (ENSG)",
+                   "enhanceratlas_gene_symbol": "Gene(Enhancer) Symbol",
+                   "enhanceratlas_omim_disease_related": "Gene(Enhancer) Phenotype",
+                   "enhanceratlas_omim_inheritance_model": "Gene(Enhancer) Inheritance Model",
+                   "enhanceratlas_cosmic_role_in_cancer": "Gene(Enhancer) Role in Cancer",
+                   "risk_score": "Risk_Score"
+                }
+
 }
 
 ON_TARGET_JSON_EXAMPLE = """{
