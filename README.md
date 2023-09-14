@@ -9,7 +9,7 @@ docker network create off-risk-net
 
 ## gRNA input page
 
-![alt text](images/grna_page_explanatory.png)
+![grna_page_explanatory](https://github.com/gili311/OffRisk-ui/assets/17099695/ba1d9af8-023a-478b-9459-32d2bb42afce)
 
 ### Server and Databases section
 1. Navigation: This section provides a navigation tool in the form of a navbar to access various tools within the off-risk-ui.
@@ -32,9 +32,7 @@ this section allow two types of search. Single search **or** Batch search.
 
    Following codes are supported (as described in [Cas-Offinder repository](https://github.com/snugel/cas-offinder/tree/2.4.1) ):
 
-<div style="margin-left: auto;
-            margin-right: auto;
-            width: 60%">
+<div align="center">
 
 |   A   |    C   |   G   |   T   |
 |:-----:|:------:|:-----:|:-----:|
@@ -91,7 +89,7 @@ for example:
     
 ## Off-target page
 
-![alt text](images/off_target_page_explanatory.png)
+![off_target_page_explanatory](https://github.com/gili311/OffRisk-ui/assets/17099695/e22dc7e4-d376-4690-aa18-f526e6e0df17)
 
 ### Server and Databases section
 1. Navbar to navigate between off-risk-ui tools
@@ -112,9 +110,7 @@ this section allow two types inputs.
 
    for example:
 
-<div style="margin-left: auto;
-            margin-right: auto;
-            width: 60%">
+<div align="center">
 
 | <!-- -->    | <!-- -->     | <!-- -->     | <!-- -->   |
 |:-----------:|:------------:|:------------:|:----------:|
@@ -127,22 +123,23 @@ this section allow two types inputs.
 
 </div>
 
-5. free text file where each row contains the bellow details about the guid target sequence, seperated by space:
+5. Free text file where each row contains the bellow details about the guid target sequence, seperated by space:
    - 1st column for the **chromosome** of the target sequence
    - 2nd column for the **start** location of the target sequence
    - 3rd column for the **end** location of the target sequence
    - 4th column for the **strand** of the target sequence
-   
+      
    for example:
-
-```
+     
+    ```
       1 4888228 4888251 - 
       2 38211467 38211490 +
       20 21476782 21476805 +
       14 22547572 22547595 -
       X 152319010 152319033 + 
       10 21110550 21110573 -
-```
+    ```
+
 
 6. Run button
 
@@ -150,8 +147,8 @@ this section allow two types inputs.
 
 ### Output section
 
-For both **gRNA input page** and **Off-target page** the output section, after the search tools finished running a tables containing information about the off-targets will be present bellow.</br>
-*Examples of the output can be found in the example folder on this repository.*
+For both the **gRNA input page** and the **Off-target page**, once the search tools have completed their operation, tables containing information regarding the off-targets will be displayed below.</br>
+*Sample output instances are accessible within the example folder within this repository for reference.*
 
 
 #### FlashFry Score Summary
@@ -161,7 +158,7 @@ more information about FlashFry scoring can be found in [FlashFry repository](ht
 
 #### Off-targets Summary
 
-A summary of the off-targets and their annotations found in the databases 
+An overview encompassing the off-targets and their corresponding annotations retrieved from the databases.
 
 - **(column 1) - Off Target ID**: A unique identifier or reference for the off-target site being analyzed. This could be a numerical or alphanumeric identifier.
 - **(column 2) - crRNA**: Short for "CRISPR RNA," it represents the guide RNA sequence used in a CRISPR-Cas9 gene editing experiment. This sequence guides the Cas9 protein to the target DNA.
@@ -178,7 +175,7 @@ A summary of the off-targets and their annotations found in the databases
 
 #### Target Risk Score Summary
 
-A more detailed summary only of the target who have more risk potential based on the databases annotation results.
+A more comprehensive summary is provided exclusively for targets with elevated risk potential, as determined by the annotation results from various databases.
 
 - **(column 1) - Off Target ID**: A unique identifier or reference for the off-target site being analyzed. This could be a numerical or alphanumeric identifier.
 - **(column 2) - crRNA**: Short for "CRISPR RNA," it represents the guide RNA sequence used in a CRISPR-Cas9 gene editing experiment. This sequence guides the Cas9 protein to the target DNA.
@@ -187,28 +184,14 @@ A more detailed summary only of the target who have more risk potential based on
 - **(column 5) - Start**: The starting position or coordinate of the DNA sequence on the specified chromosome.
 - **(column 6) - End**: The ending position or coordinate of the DNA sequence on the specified chromosome.
 - **(column 7) - Strand**: Indicates whether the DNA sequence is on the forward (+) or reverse (-) strand of the chromosome.
-- **(column 8) - Risk score**:score based on the genomic feature or region it hits (coding/non-coding/regulatory) and the function associated with the feature.
+- **(column 8) - Mismatches**: The number of mismatches or differences between the crRNA and the target DNA sequence. Mismatches can affect the efficiency of CRISPR-Cas9 editing.
 - **(column 9) - Gene Type**: Describes the type of gene associated with the target DNA sequence, such as protein-coding gene, non-coding RNA, etc.
 - **(column 10) - Feature**: Specific features or functional elements associated with the target DNA sequence, such as exons, introns, promoters, enhancers, etc.
-- **(column 10) - Gene Symbol**: 
-- **(column 11-29) - Databases annotations**: 
+- **(column 11-26) - Databases annotations**:
+- **(column 27) - Risk score**:score based on the genomic feature or region it hits (coding/non-coding/regulatory) and the function associated with the feature.
 
 #### Detailed biological information
 
-Detailed information for each off-target and his annotations found in each database.
+Comprehensive details pertaining to each off-target, along with their respective annotations across various databases, are available for reference.
 
-# Build the docker:
-The docker can be build from the server repo using docker-compose. both repo needs to be on the same directory:
-
-root
-    -OffRisk
-    -OffRisk-ui
-
-More instruction can be found in the documentation and in repo OffRisk
-# Run locally with pycharm
-~~~
-streamlit run main.py
-~~~
-
-## go to the browser at:
-http://localhost:8501/
+To view illustrative output examples, kindly navigate to the dedicated "examples" page.
