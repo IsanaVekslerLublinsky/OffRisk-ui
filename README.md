@@ -1,13 +1,12 @@
 # OffRisk UI
-OffRisk UI is running with the server OffRisk, and both need to be on the same network
-To create the network:
-~~~
-docker network create off-risk-net
-~~~
 
-
+The Off-Risk web UI simplifies the process of annotating CRISPR off-target sites using the Off-Risk server.</br>
+To install it, please refer to the [Off-Risk repository](https://github.com/gili311/OffRisk) for detailed installation instructions and guidance.
 
 ## gRNA input page
+
+**For your convenience, we have also prepared an [example video](https://www.dropbox.com/scl/fi/i4t4w3prcuigqqd9ss1f8/Off-Risk-gRNA-input-Made-with-Clipchamp.mp4?rlkey=50z9gosdebr5vdjw4lc6ifdsl&dl=0) that you can refer to for guidance.**
+
 
 ![grna_page_explanatory](https://github.com/gili311/OffRisk-ui/assets/17099695/ba1d9af8-023a-478b-9459-32d2bb42afce)
 
@@ -89,6 +88,8 @@ for example:
     
 ## Off-target page
 
+**For your convenience, we have also prepared an [example video](https://www.dropbox.com/scl/fi/aul3yf933b1b7nxe9p9v6/Off-Risk-Off-Target-Made-with-Clipchamp.mp4?rlkey=ydef058gi4b8sage7uzpi0qs9&dl=0) that you can refer to for guidance.**
+
 ![off_target_page_explanatory](https://github.com/gili311/OffRisk-ui/assets/17099695/e22dc7e4-d376-4690-aa18-f526e6e0df17)
 
 ### Server and Databases section
@@ -158,7 +159,9 @@ more information about FlashFry scoring can be found in [FlashFry repository](ht
 
 #### Off-targets Summary
 
-An overview encompassing the off-targets and their corresponding annotations retrieved from the databases.
+An overview encompassing the off-targets and their corresponding annotations retrieved from the databases.</br>
+**Please note** *that this table contains only consolidated data. For more detailed information about the risked sites, please refer to the "Target Risk Score Summary" table for more comprehensive data.*
+
 
 - **(column 1) - Off Target ID**: A unique identifier or reference for the off-target site being analyzed. This could be a numerical or alphanumeric identifier.
 - **(column 2) - crRNA**: Short for "CRISPR RNA," it represents the guide RNA sequence used in a CRISPR-Cas9 gene editing experiment. This sequence guides the Cas9 protein to the target DNA.
@@ -194,4 +197,11 @@ A more comprehensive summary is provided exclusively for targets with elevated r
 
 Comprehensive details pertaining to each off-target, along with their respective annotations across various databases, are available for reference.
 
-To view illustrative output examples, kindly navigate to the dedicated "examples" page.
+To view illustrative output examples, kindly navigate to the dedicated ["examples"](https://github.com/gili311/OffRisk-ui/tree/main/examples) page.
+
+## Contact Us
+
+Your feedback is incredibly valuable to us. If you have any specific suggestions or encounter any issues, please don't hesitate to share them with us via the GitHub issue tracker.</br>
+We are genuinely eager to hear your thoughts and ideas to continually improve our tool.
+
+
